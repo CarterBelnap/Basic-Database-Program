@@ -57,31 +57,30 @@ def test_input(str_grade):
 def add_user():
 
     name = input("Add Student: ")
-    grade1 = test_input("Grade 1")
-    grade2 =  test_input("Grade 2")
-    grade3 =  test_input("Grade 3")
-    grade4 =  test_input("Grade 4")
+    grade1 = test_input("Grade 1: ")
+    grade2 =  test_input("Grade 2: ")
+    grade3 =  test_input("Grade 3: ")
+    grade4 =  test_input("Grade 4: ")
    
-
-    time.sleep(2)
+    insert_db(connection,"Name",["Name","Math","Science","French","History"],[name,grade1,grade2,grade3,grade4])
+    time.sleep(1)
     print("Student Added Successfully")
-    update_db.append([name,grade1,grade2,grade3,grade4])
-
-def list_user():
-    for i in create_connection('database.db'):
-        print(i)
 
 def course_average(spot):
     crsav = 0
-    for i in create_connection("database.db"):
+    cursor=select_db(connection,"Name").fetchall()
+    for i in cursor:
         crsav += (i[spot])
-    crsav=crsav//len(create_connection("database.db"))
-    print(f"{crsav}")
+    crsav=crsav//len(cursor)
+    print(f"{crsav}%")
+    
 
 def student_average():
-    for i in create_connection('database.db'):
-        average = (i[1]+i[2]+i[3]+i[4])//4
+    cursor=select_db(connection,"Name").fetchall()
+    for i in cursor:
+        average = (i[2]+i[3]+i[4]+i[5])//4
         print(f"{i[0]}, {average}%")
+    input("Press Enter To Return To Main Menu:")
 
 def menu():
     while run == True:
@@ -102,38 +101,42 @@ def menu():
 
         #Input 1-5
         try:
-            print("Selection: ")
-
+            select = input("Selection: ")
             #Adding Users To Array 
-            if input() == 1:
+            if select == "1":
                 os.system("cls")
                 add_user()
             
             #Listing Users In Array
-            elif input() == 2:
+            elif select == "2":
                 os.system("cls")
-                list_user()
+                cursor=select_db(connection,"Name").fetchall()
+                for i in cursor:
+                    print(f"{i}")
+                    time.sleep(0.05)
+                input("Press Enter To Return To Main Menu:")
                     
             #Calculating Course Averages
-            elif input() == 3:
+            elif select == "3":
                 os.system("cls")
                 print("Math:")
-                (course_average(1))
-                print("English:")
                 (course_average(2))
-                print("Science:")
+                print("English:")
                 (course_average(3))
-                print("French:")
+                print("Science:")
                 (course_average(4))
+                print("French:")
+                (course_average(5))
                 time.sleep(2)
+                input("Press Enter To Return To Main Menu:")
 
             #Calculating Student Averages
-            elif input() == 4:
+            elif select == "4":
                 os.system("cls")
                 student_average()
 
             #Kill Program
-            elif input() == 5:
+            elif select == "5":
                 print("Goodbye")
                 time.sleep(2)
                 break
@@ -150,7 +153,7 @@ def menu():
 connection = create_connection('database.db')
 if connection is not None:
 #ALL CODE HERE
-    run == True
+    run = True
     menu()
 
 else:
